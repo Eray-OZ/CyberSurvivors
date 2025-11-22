@@ -1,0 +1,22 @@
+# Varsayılan olarak her şeyi yoksay
+*
+
+# Klasörlerin içine bakılmasına izin ver (git'in alt dizinleri taramasını sağlar)
+!*/
+
+# Yalnızca belirli dosya ve klasörlere izin ver
+
+# Assets/Scripts klasöründeki C# scriptlerine ve onların .meta dosyalarına izin ver
+# .meta dosyaları Unity'de script referanslarını korumak için önemlidir.
+!Assets/
+!Assets/Scripts/
+!Assets/Scripts/**/*.cs
+!Assets/Scripts/**/*.meta
+
+# Packages klasöründeki tüm .json dosyalarına izin ver
+!Packages/
+!Packages/**/*.json
+
+# .gitignore dosyasının kendisine izin ver
+!.gitignore
+
