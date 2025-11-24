@@ -1,12 +1,15 @@
 using UnityEngine;
-using UnityEngine.UI; // UI sistemini kullanmak için eklendi
+using UnityEngine.UI; 
+using System.Collections; // Coroutine için eklendi
 
 public class HealthController : MonoBehaviour
 {
     public float maxHealth = 100f; 
-    public Slider healthSlider; // Health Bar Slider'ı (Inspector'dan atayacağız)
+    public Slider healthSlider; 
     
     private float currentHealth; 
+    private SpriteRenderer sr; // YENİ: Görsel bileşeni tutar
+    private Color originalColor; // YENİ: Orijinal rengi tutar
 
     void Start()
     {
@@ -17,6 +20,13 @@ public class HealthController : MonoBehaviour
         {
             healthSlider.maxValue = maxHealth;
             healthSlider.value = currentHealth;
+        }
+        
+        // YENİ: SpriteRenderer'ı al ve orijinal rengi kaydet
+        sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            originalColor = sr.color;
         }
     }
 
@@ -31,9 +41,14 @@ public class HealthController : MonoBehaviour
             healthSlider.value = currentHealth;
         }
         
+        // YENİ: Hasar tepkimesi için Coroutine'i başlat
+        if (sr != null)
+        {
+            StartCoroutine(DamageFlash());
+        }
+        
         if (currentHealth <= 0)
         {
-            // Eğer canı biten Player ise, Game Over sinyali gönder
             if (CompareTag("Player"))
             {
                 Time.timeScale = 0f; // Oyunu durdur
@@ -43,4 +58,18 @@ public class HealthController : MonoBehaviour
             Destroy(gameObject); 
         }
     }
+
+   // HealthController.cs içindeki DamageFlash fonksiyonu
+
+private IEnumerator DamageFlash() 
+{
+    if (sr == null) yield break; 
+    
+    // YENİ DÜZELTME: Parlak kırmızı renk tanımlayıp opak yapıyoruz (Alpha = 1)
+    Color flashColor = Color.red; 
+    
+    sr.color = flashColor; // 1. Parlat: Kırmızı ve Tam Opak yap
+    yield return new WaitForSeconds(0.1f); // 2. Kısa bekleme
+    sr.color = originalColor; // 3. Eski Renge Dön
+}
 }
