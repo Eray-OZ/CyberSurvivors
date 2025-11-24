@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab; 
     
 
+
     // Düşman üretim sıklığı (2 saniyede bir başlasın)
     public float spawnInterval = 2f; 
     
@@ -17,6 +18,7 @@ public class EnemySpawner : MonoBehaviour
 
     void SpawnEnemy()
 {
+
     // Bu fonksiyon her 2 saniyede bir çalışacak.
 
     // 1. Player'ın pozisyonunu al

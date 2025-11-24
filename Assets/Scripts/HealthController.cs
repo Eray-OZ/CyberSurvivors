@@ -1,32 +1,46 @@
 using UnityEngine;
+using UnityEngine.UI; // UI sistemini kullanmak için eklendi
 
 public class HealthController : MonoBehaviour
 {
-    // Bu değer Inspector'da ayarlanacak
     public float maxHealth = 100f; 
-
-    // Anlık can değeri
+    public Slider healthSlider; // Health Bar Slider'ı (Inspector'dan atayacağız)
+    
     private float currentHealth; 
 
     void Start()
     {
-        // Oyun başladığında, mevcut can maksimum cana eşitlenir.
-        currentHealth = maxHealth; 
+        currentHealth = maxHealth;
+        
+        // Slider'ı başlangıçta ayarla
+        if (healthSlider != null) 
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = currentHealth;
+        }
     }
-
-
 
     public void TakeDamage(float damageAmount)
-{
-    Debug.Log(gameObject.name + " hasar alıyor: " + damageAmount);
-    // Hasarı uygula
-    currentHealth -= damageAmount;
-    
-    if (currentHealth <= 0)
     {
-        // Objeyi sahneden kaldir
-        Destroy(gameObject); 
+        // Hasarı uygula
+        currentHealth -= damageAmount;
+        
+        // Slider'ı güncelle
+        if (healthSlider != null)
+        {
+            healthSlider.value = currentHealth;
+        }
+        
+        if (currentHealth <= 0)
+        {
+            // Eğer canı biten Player ise, Game Over sinyali gönder
+            if (CompareTag("Player"))
+            {
+                Time.timeScale = 0f; // Oyunu durdur
+                Debug.Log("GAME OVER!");
+            }
+            // Objeyi sahneden kaldır
+            Destroy(gameObject); 
+        }
     }
-}
-
 }

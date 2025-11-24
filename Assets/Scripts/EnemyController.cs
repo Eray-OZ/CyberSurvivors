@@ -2,39 +2,41 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    // Inspector'dan atanacak değişkenler
+    // Inspector'dan atanacaklar
     public Transform player; 
     public float moveSpeed = 3f;
     
     // Kodda erişim için gerekli özel değişkenler
     private Rigidbody2D rb;
-    private SpriteRenderer sr; // Görsel bileşeni tutacak değişken
+    private SpriteRenderer sr; 
 
     void Start()
     {
-        // Oyun başladığında gerekli bileşenleri alıyoruz
+        // Bileşenleri al
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>(); 
     }
 
     void Update()
     {
-        // 1. Yönü hesapla ve Normalleştir (Hedef - Başlangıç)
+        if (player == null) return; // Player öldüyse takibi durdur
+
+        // 1. Yönü hesapla ve Normalleştir
         Vector2 direction = (player.position - transform.position).normalized;
 
-        // 2. Fizik motoruna hızı at (Düşmanı hareket ettir)
+        // 2. Fizik motoruna hızı ata
         rb.linearVelocity = direction * moveSpeed;
 
-        // 3. Yön Kontrolü (Flip Logic): Sadece sola hareket ediyorsa çevir
+        // 3. Yön Kontrolü (Flip Logic)
         if (sr != null) 
         {
             if (direction.x > 0)
             {
-                sr.flipX = false;  // Player sağdaysa sağa bak (Normal)
+                sr.flipX = false;
             }
             else if (direction.x < 0)
             {
-                sr.flipX = true;   // Player soldaysa sola bak (Çevir)
+                sr.flipX = true;
             }
         }
     }

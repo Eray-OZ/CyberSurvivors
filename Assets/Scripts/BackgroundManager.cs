@@ -2,20 +2,25 @@ using UnityEngine;
 
 public class BackgroundManager : MonoBehaviour
 {
-    public Transform player; // Hiyerarşiden atanan Player objesi
-    private float tileSize; // Boyut artık kodla dinamik olarak hesaplanacak
-    private Transform[] tiles; // Tüm fayansları tutacak dizi
+    // Inspector'dan atanan Player referansı
+    public Transform player; 
+    public float tileSize = 20f; // Fayans boyutu
+    
+    private Transform[] tiles; 
 
     void Start()
     {
-        // 1. Dinamik Boyut Hesaplama (Fayansın gerçek dünya boyutunu öğrenme)
-        // İlk fayansın SpriteRenderer bileşenini alıyoruz
-        SpriteRenderer tileRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
-        
-        // Fayansın X eksenindeki gerçek Dünya Boyutunu hesapla
-        tileSize = tileRenderer.bounds.size.x; 
+        // Eğer TileSize 0 ise, dinamik olarak hesapla (önceki hatalardan korunmak için)
+        if (tileSize <= 0 && transform.childCount > 0)
+        {
+            SpriteRenderer tileRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+            if (tileRenderer != null)
+            {
+                tileSize = tileRenderer.bounds.size.x;
+            }
+        }
 
-        // 2. Alt objeleri diziye doldurma
+        // Alt objeleri diziye doldurma
         tiles = new Transform[transform.childCount]; 
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -23,20 +28,21 @@ public class BackgroundManager : MonoBehaviour
         }
     }
 
-    // Harita sarma mantığı için LateUpdate kullanılır (Player hareketinden sonra çalışır)
     void LateUpdate() 
     {
+        // KRİTİK HATA ÇÖZÜMÜ: Eğer Player objesi yoksa (null), fonksiyonu hemen durdur.
+        if (player == null) return; 
+
+        // Bu kontrol sayesinde artık player.position okunduğunda hata vermez.
         foreach (Transform tile in tiles)
         {
-            // Player'dan fayansa olan X ve Y mesafesini hesapla
+            // Hata veren satır buydu: Şimdi güvenli.
             float deltaX = player.position.x - tile.position.x;
             float deltaY = player.position.y - tile.position.y;
 
             // X EKSENİNDE SARMA KONTROLÜ
-            // Fayansın yarısı kadar uzaklaşmışsa (daha pürüzsüz olması için) ışınla.
             if (Mathf.Abs(deltaX) >= tileSize / 2f)
             {
-                // Player'ın gittiği yöne (+1 veya -1) doğru tam bir fayans boyu kadar ışınla.
                 tile.position += Vector3.right * tileSize * Mathf.Sign(deltaX);
             }
 
