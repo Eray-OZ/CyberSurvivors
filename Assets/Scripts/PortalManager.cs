@@ -13,10 +13,7 @@ public class PortalManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
-    {
-        Debug.Log("MOUSE TIKLANDI. PORTAL YERLEŞTİRİLİYOR...");
-    }
+     
         // Sol Click (Portal A)
         if (Input.GetMouseButtonDown(0))
         {
